@@ -1,0 +1,60 @@
+---
+title: "Fuel Prices in Delhi (Assignment 2)"
+author: "Rishikesh Pillay"
+date: "7/9/2021"
+output: html_document
+---
+
+# Overview 
+Using Plotly I am going show fuel (petrol and diesel) price trend from Jan 2020 to May 2021
+
+This data-set has fuel prices for the city of Delhi. Considering how the fuel prices are rising in India these days, thought this would be a good data-set to have and visualize.
+
+## Content
+This data has prices from January 2020 to May 2021. The original data itself is from [mypetrolprice.com](mypetrolprice.com)
+And this paticular data-set is from [kaggle](https://www.kaggle.com/rajatrc1705/fuel-prices-delhi-202021)
+
+## Task
+I am trying to understand trend or rather understand how fuel (particulary Petrol and Diesel) prices changed in pandemic year 2020 and first half of 2021
+
+# Data loading and getting ready for plotting
+
+```{r read, message=FALSE, warning=FALSE}
+library(readr)
+library(lubridate)
+library(dplyr)
+library(reshape2)
+
+
+df <- read_csv("Data/fuel_prices.csv")
+df$date <- dmy(df$date)
+fuel <-
+        melt(df,
+             id = "date",
+             measure.vars = c("petrol_price", "diesel_price"))
+
+```
+
+# Trend Using plotly
+
+```{r fig, message=FALSE, warning=FALSE}
+library(plotly)
+fig <-
+        plot_ly(
+                data = fuel,
+                x = ~ date,
+                y =  ~ value,
+                color = ~ variable,
+                colors = c("#e82088", "#400c99"),
+                mode = "line"
+        )
+fig <-
+        fig %>% layout(
+                title = "Fuel Prices in Delhi from Jan 2020 to May 2021",
+                xaxis = list(title = 'Date'),
+                yaxis = list(title = 'Price (India Rupees Rs.)')
+        )
+
+fig
+```
+
